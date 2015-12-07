@@ -67,7 +67,7 @@ namespace Bin2CMSBuildTask.Tests
 				var unitUnderTest = new Bin2C {
 					BuildEngine = buildEngine,
 					InputAssemblies = new ITaskItem[] {
-						new TaskItem("nonexistent.txt")	
+						new TaskItem("test.txt")	
 					},
 					OutputFile = new TaskItem("output")
 				};
