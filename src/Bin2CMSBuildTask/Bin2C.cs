@@ -25,22 +25,24 @@ namespace Bin2CMSBuildTask
 			{
 				return false;
 			}
-
-			var hFileName = string.Format("{0}.h", OutputFile);
-			var cFileName = string.Format("{0}.c", OutputFile);
-			var outputFileTitle = _titleFormat.Replace(OutputFile.ToString(), "_");
+				
+			var outputFileName = Path.GetFileName(OutputFile.ToString());
+			var hFilePath = string.Format("{0}.h", OutputFile);
+			var hFileName = string.Format("{0}.h", outputFileName);
+			var cFilePath = string.Format("{0}.c", OutputFile);
+			var outputFileTitle = _titleFormat.Replace(outputFileName.ToString(), "_");
 			var outputFileTitleUpper = outputFileTitle.ToUpper();
 
 			try
 			{
-				using(var hFile = new FileStream(hFileName, FileMode.Create, FileAccess.Write))
+				using(var hFile = new FileStream(hFilePath, FileMode.Create, FileAccess.Write))
 				{
 					using (var hsw = new StreamWriter(hFile))
 					{
 						hsw.WriteLine("#ifndef __{0}_H__", outputFileTitleUpper);
 						hsw.WriteLine("#define __{0}_H__", outputFileTitleUpper);
 
-						using (var cFile = new FileStream(cFileName, FileMode.Create, FileAccess.Write))
+						using (var cFile = new FileStream(cFilePath, FileMode.Create, FileAccess.Write))
 						{
 							using (var csw = new StreamWriter(cFile))
 							{

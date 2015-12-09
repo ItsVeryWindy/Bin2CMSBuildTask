@@ -25,10 +25,10 @@ namespace Bin2CMSBuildTask.Tests
 			var unitUnderTest = new Bin2C
 			{
 				BuildEngine = buildEngine,
-				InputAssemblies = new ITaskItem[] {
+				InputFiles = new ITaskItem[] {
 					new TaskItem("test.txt")	
 				},
-				OutputFile = new TaskItem("output")
+				OutputFile = new TaskItem("./output")
 			};
 
 			Assert.That(unitUnderTest.Execute(), Is.True);
@@ -46,7 +46,7 @@ namespace Bin2CMSBuildTask.Tests
 			var unitUnderTest = new Bin2C
 			{
 				BuildEngine = buildEngine,
-				InputAssemblies = new ITaskItem[] {
+				InputFiles = new ITaskItem[] {
 					new TaskItem("nonexistent.txt")	
 				},
 				OutputFile = new TaskItem("output")
@@ -66,7 +66,7 @@ namespace Bin2CMSBuildTask.Tests
 
 				var unitUnderTest = new Bin2C {
 					BuildEngine = buildEngine,
-					InputAssemblies = new ITaskItem[] {
+					InputFiles = new ITaskItem[] {
 						new TaskItem("test.txt")	
 					},
 					OutputFile = new TaskItem("output")
