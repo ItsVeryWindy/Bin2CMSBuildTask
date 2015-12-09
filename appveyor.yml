@@ -21,6 +21,9 @@ configuration: Release
 
 before_build:
   - nuget restore "./Bin2CMSBuildTask.sln"
+after_build:
+  - nuget spec "./src/Bin2CMSBuildTask.csproj"
+  - nuget pack "./src/Bin2CMSBuildTask.csproj"
 build:
   project: ./Bin2CMSBuildTask.sln
   verbosity: minimal

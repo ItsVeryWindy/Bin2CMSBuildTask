@@ -4,6 +4,8 @@ using Microsoft.Build.Utilities;
 using System.IO;
 using System.Text.RegularExpressions;
 using System.Linq;
+using System.Text;
+using System.Collections.Generic;
 
 namespace Bin2CMSBuildTask
 {
@@ -26,6 +28,8 @@ namespace Bin2CMSBuildTask
 
 			var hFileName = string.Format("{0}.h", OutputFile);
 			var cFileName = string.Format("{0}.c", OutputFile);
+			var outputFileTitle = _titleFormat.Replace(OutputFile.ToString(), "_");
+			var outputFileTitleUpper = outputFileTitle.ToUpper();
 
 			try
 			{
@@ -33,18 +37,25 @@ namespace Bin2CMSBuildTask
 				{
 					using (var hsw = new StreamWriter(hFile))
 					{
-						var outputFileTitle = _titleFormat.Replace(OutputFile.ToString(), "_").ToUpper();
-
-						hsw.WriteLine("#ifndef __{0}_H__", outputFileTitle);
-						hsw.WriteLine("#define __{0}_H__", outputFileTitle);
+						hsw.WriteLine("#ifndef __{0}_H__", outputFileTitleUpper);
+						hsw.WriteLine("#define __{0}_H__", outputFileTitleUpper);
 
 						using (var cFile = new FileStream(cFileName, FileMode.Create, FileAccess.Write))
 						{
 							using (var csw = new StreamWriter(cFile))
 							{
+								csw.WriteLine("#include \"{0}\"", hFileName);
+								csw.WriteLine("const unsigned int {0}_size = {1};", outputFileTitle, InputAssemblies.Length);
+
+								var filenames = new Stack<string>();
+								var data = new Stack<string>();
+
 								foreach(var item in InputAssemblies)
 								{
 									var title = _titleFormat.Replace(item.ToString(), "_");
+
+									filenames.Push(string.Format("\"{0}\"", item));
+									data.Push(title);
 
 									hsw.WriteLine("extern const unsigned char * {0};", title);
 
@@ -62,8 +73,15 @@ namespace Bin2CMSBuildTask
 
 									csw.WriteLine("\";");
 								}
+
+								csw.WriteLine("const char * {0}_filenames[] = {{{1}}};", outputFileTitle, string.Join(",", filenames));
+								csw.WriteLine("const unsigned char * {0}_data[] = {{{1}}};", outputFileTitle, string.Join(",", data));
 							}
 						}
+
+						hsw.WriteLine("extern const char * {0}_filenames[];", outputFileTitle);
+						hsw.WriteLine("extern const unsigned char * {0}_data[];", outputFileTitle);
+						hsw.WriteLine("extern const unsigned int {0}_size;", outputFileTitle);
 
 						hsw.WriteLine("#endif");
 					}
