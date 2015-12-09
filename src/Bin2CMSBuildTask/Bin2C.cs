@@ -14,14 +14,14 @@ namespace Bin2CMSBuildTask
 		private static readonly Regex _titleFormat = new Regex("\\W", RegexOptions.Compiled);
 
 		[Required]
-		public ITaskItem[] InputAssemblies { get; set; }
+		public ITaskItem[] InputFiles { get; set; }
 
 		[Required]
 		public ITaskItem OutputFile { get; set; }
 
 		public override bool Execute()
 		{
-			if(InputAssemblies.Any(e => !File.Exists(e.ToString())))
+			if(InputFiles.Any(e => !File.Exists(e.ToString())))
 			{
 				return false;
 			}
@@ -47,12 +47,12 @@ namespace Bin2CMSBuildTask
 							using (var csw = new StreamWriter(cFile))
 							{
 								csw.WriteLine("#include \"{0}\"", hFileName);
-								csw.WriteLine("const unsigned int {0}_size = {1};", outputFileTitle, InputAssemblies.Length);
+								csw.WriteLine("const unsigned int {0}_size = {1};", outputFileTitle, InputFiles.Length);
 
 								var filenames = new Stack<string>();
 								var data = new Stack<string>();
 
-								foreach(var item in InputAssemblies)
+								foreach(var item in InputFiles)
 								{
 									var title = _titleFormat.Replace(item.ToString(), "_");
 
