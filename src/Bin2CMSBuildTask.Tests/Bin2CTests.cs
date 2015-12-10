@@ -26,7 +26,7 @@ namespace Bin2CMSBuildTask.Tests
 			{
 				BuildEngine = buildEngine,
 				InputFiles = new ITaskItem[] {
-					new TaskItem("test.txt")	
+					new TaskItem("./test.txt")	
 				},
 				OutputFile = new TaskItem("./output")
 			};

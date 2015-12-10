@@ -23,6 +23,7 @@ namespace Bin2CMSBuildTask
 		{
 			if(InputFiles.Any(e => !File.Exists(e.ToString())))
 			{
+				Log.LogError("File(s) not found: {0}", string.Join(", ", InputFiles.Where(e => !File.Exists(e.ToString())).Select(e => e.ToString())));
 				return false;
 			}
 				
@@ -54,9 +55,13 @@ namespace Bin2CMSBuildTask
 
 								foreach(var item in InputFiles)
 								{
-									var title = _titleFormat.Replace(item.ToString(), "_");
+									var itemName = Path.GetFileName(item.ToString());
 
-									filenames.Push(string.Format("\"{0}\"", item));
+									var title = _titleFormat.Replace(itemName, "_");
+
+									Log.LogMessage("Writing file {0} to variable {1}", itemName, title);
+
+									filenames.Push(string.Format("\"{0}\"", itemName));
 									data.Push(title);
 
 									hsw.WriteLine("extern const unsigned char * {0};", title);
@@ -89,8 +94,9 @@ namespace Bin2CMSBuildTask
 					}
 				}
 			}
-			catch(IOException)
+			catch(IOException ex)
 			{
+				Log.LogErrorFromException(ex);
 				return false;
 			}
 
